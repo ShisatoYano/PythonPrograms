@@ -1,0 +1,22 @@
+Red: #f44336
+Pink: #E91E63
+Purple: #9C27B0
+
+Blue: #2196F3
+Light Blue: #03A9F4
+Cyan: #00BCD4
+Teal: #009688
+
+Green: #4CAF50
+Light Green: #8BC34A
+Lime: #CDDC39
+
+Yellow: #FFEB3B
+Orange: #FF9800
+Deep Orange: #FF5722
+
+Brown: #795548
+Grey: #9E9E9E
+Blue Grey: #607D8B
+Black: #212121
+  
