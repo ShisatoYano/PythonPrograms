@@ -7,14 +7,18 @@ User can operate a target by inputting velosity and yawrate.
 This program can simulate a static/dynamic target detection.
 Distance, horizontal angle, velosity on range and angle direction.
 
-Author: Shisato Yano
-Last Update: 2018/07/04
-"""
+How to use:
+    
 
+Author: Shisato Yano
+
+Last Update: 2018/07/11
+"""
 from math import sin, cos, tan, atan, sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import RadioButtons, Slider
+import matplotlib.animation as anm
 
 # クラス定義
 class ObjectSensingSimulator(object):
@@ -24,19 +28,33 @@ class ObjectSensingSimulator(object):
         self.deltaTime_s = deltaTime_s
 
         # センサの検知範囲パラメータ定義
-        self.maxRange_mm    = 80000           # 最大検知可能距離[mm]
+        self.maxRange_mm    = 100000           # 最大検知可能距離[mm]
         self.minRange_mm    = 5000            # 最小検知可能距離[mm]
-        self.leftAngle_rad  = np.deg2rad(45)  # 左側検知可能角度[rad]  
-        self.rightAngle_rad = np.deg2rad(-45) # 右側検知可能角度[rad]
+        self.leftAngle_deg  = 45              # 左側検知可能角度[deg]  
+        self.rightAngle_deg = -45             # 右側検知可能角度[deg]
 
-        # 検知範囲の境界線配列を定義
-        self.centerArray     = np.arange(0, self.maxRange_mm, 2000)        # 中心線
-        self.rightBoundArray = self.centerArray * tan(self.rightAngle_rad) # 右側境界線
-        self.leftBoundArray  = self.centerArray * tan(self.leftAngle_rad)  # 左側境界線
-        # 境界線閉じる終点を追加
-        self.centerArray     = np.append(self.centerArray, (self.maxRange_mm + 10000))
-        self.rightBoundArray = np.append(self.rightBoundArray, 0)
-        self.leftBoundArray  = np.append(self.leftBoundArray, 0)
+        # 検知範囲を扇形で描画するための角度配列
+        angleStep = 1
+        leftAngleArray  = np.arange(0, self.leftAngle_deg + angleStep, angleStep)
+        rightAngleArray = np.arange(0, self.rightAngle_deg - angleStep, -angleStep)
+
+        # 左側の境界線座標配列
+        leftBoundaryX = []
+        leftBoundaryX.append([self.maxRange_mm * cos(np.deg2rad(angle)) for angle in leftAngleArray])
+        leftBoundaryX = np.append(leftBoundaryX, 0.0)
+        leftBoundaryY = []
+        leftBoundaryY.append([self.maxRange_mm * sin(np.deg2rad(angle)) for angle in leftAngleArray])
+        leftBoundaryY = np.append(leftBoundaryY, 0.0)
+        self.leftScanBoundary = np.vstack((leftBoundaryX, leftBoundaryY))
+
+        # 右側の境界線座標配列
+        rightBoundaryX = []
+        rightBoundaryX.append([self.maxRange_mm * cos(np.deg2rad(angle)) for angle in rightAngleArray])
+        rightBoundaryX = np.append(rightBoundaryX, 0.0)
+        rightBoundaryY = []
+        rightBoundaryY.append([self.maxRange_mm * sin(np.deg2rad(angle)) for angle in rightAngleArray])
+        rightBoundaryY = np.append(rightBoundaryY, 0.0)
+        self.rightScanBoundary = np.vstack((rightBoundaryX, rightBoundaryY))
 
         # ターゲットの状態方程式行列A
         self.A = np.array([[1.0, 0.0, 0.0],
@@ -47,7 +65,7 @@ class ObjectSensingSimulator(object):
         self.B = np.zeros((3, 3))
 
         # ターゲットの初期状態
-        truePosX0_mm = 100000 # 位置X座標[mm]
+        truePosX0_mm = 120000 # 位置X座標[mm]
         truePosY0_mm = 0      # 位置Y座標[mm]
         trueYaw0_rad = 0      # 方位角[rad]
         # 真値
@@ -147,10 +165,10 @@ class ObjectSensingSimulator(object):
         
         # ステップ2:扇形の境界角度より外側にあるか判定
         # 左側の判定
-        if targetAngle_rad > self.leftAngle_rad:
+        if targetAngle_rad > np.deg2rad(self.leftAngle_deg):
             return False
         # 右側の判定
-        if targetAngle_rad < self.rightAngle_rad:
+        if targetAngle_rad < np.deg2rad(self.rightAngle_deg):
             return False
         
         # 上記の条件をクリアしたら検知範囲内にいると判定
@@ -201,7 +219,10 @@ def SimAnimation(simObject, inputV, inputOmega):
     trueTarget, observedRange_mm, observedAngle_rad, rangeVelosity_mms, angleVelosity_rads, insideFlag = simObject.SimulationMain(inputV, inputOmega)
 
     # ターゲットのデータを描画
-    trueTargetPlot.set_data(trueTarget[0, 0]/1000, trueTarget[1, 0]/1000)
+    x = trueTarget[0, 0]/1000
+    y = trueTarget[1, 0]/1000
+    trueTargetPlot.set_data(x, y)
+
     # ターゲットが検知範囲内なら観測位置座標を描画
     if insideFlag == True:
         # 座標値を計算
@@ -209,12 +230,16 @@ def SimAnimation(simObject, inputV, inputOmega):
         observedPosY_mm = observedRange_mm * sin(observedAngle_rad)
         # 描画
         observedTargetPlot.set_data(observedPosX_mm/1000, observedPosY_mm/1000)
+        rangeText.set_text('Range = %.2f[m]' % (observedRange_mm/1000))
+        angleText.set_text('Angle = %.2f[deg]' % np.rad2deg(observedAngle_rad))
+        rangeVelText.set_text('Range Velosity = %.2f[m/s]' % (rangeVelosity_mms/1000))
+        angleVelText.set_text('Angle Velosity = %.2f[deg/s]' % np.rad2deg(angleVelosity_rads))
     else:
         observedTargetPlot.set_data([], [])
-    rangeText.set_text('Range = %.2f[m]' % (observedRange_mm/1000))
-    angleText.set_text('Angle = %.2f[deg]' % np.rad2deg(observedAngle_rad))
-    rangeVelText.set_text('Range Velosity = %.2f[m/s]' % (rangeVelosity_mms/1000))
-    angleVelText.set_text('Angle Velosity = %.2f[deg/s]' % np.rad2deg(angleVelosity_rads))
+        rangeText.set_text('Range = [m]')
+        angleText.set_text('Angle = [deg]')
+        rangeVelText.set_text('Range Velosity = [m/s]')
+        angleVelText.set_text('Angle Velosity = [deg/s]')
 
 if __name__ == '__main__':
     # ラジオボタン用の背景色を設定
@@ -229,13 +254,14 @@ if __name__ == '__main__':
     # アニメーションの描画オブジェクト
     fig, axSimPlot = plt.subplots(1, 1,  figsize=(8, 7))
     # レーダの検知可能範囲を描画
-    axSimPlot.plot(simObject.centerArray/1000, simObject.leftBoundArray/1000, c='#212121')
-    axSimPlot.plot(simObject.centerArray/1000, simObject.rightBoundArray/1000, c='#212121')
+    axSimPlot.plot(simObject.leftScanBoundary[0,:]/1000, simObject.leftScanBoundary[1,:]/1000, c='#212121')
+    axSimPlot.plot(simObject.rightScanBoundary[0,:]/1000, simObject.rightScanBoundary[1,:]/1000, c='#212121')
     axSimPlot.set_xlabel('X [m]')
     axSimPlot.set_ylabel('Y [m]')
     axSimPlot.set_xlim([0, 140])
     axSimPlot.set_ylim([-80, 80])
     axSimPlot.grid()
+    axSimPlot.axis('equal')
     fig.tight_layout()
     fig.subplots_adjust(left=0.25, bottom=0.2, right=None, top=None)
 
