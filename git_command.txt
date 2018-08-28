@@ -1,0 +1,39 @@
+git clone <URL> クローン
+
+git branch hoge ブランチ作成
+
+git branch 今いるブランチを*で示す
+
+git branch --all ブランチ一覧を確認
+
+git checkout hoge ブランチ変更(チェックアウト)
+
+git checkout -b hoge hogeブランチ作成からの変更
+
+git branch -m hoge1 hoge2 ブランチ名をhoge1 -> hoge2へ変更
+
+git branch -d hoge ブランチhogeを削除
+
+git remote -v リモートリポジトリとURLの一覧
+
+git remote add hoge URL リモートリポジトリを追加
+
+git remote rm hoge リモートリポジトリを削除
+
+git status 前回のコミットと比較した変更内容を表示
+
+touch hoge ファイル作成
+
+git add hoge ワークスペース上の編集or追加ファイルをステージにあげる
+
+git commit -m "comment" ローカルリポジトリにコミットする
+
+git log コミットログの確認
+
+git reset --hard HEAD^ 一つ前のコミット取り消し
+
+git commit --amend 直前のコミットに上書き
+
+git push -u origin master リモートリポジトリにプッシュ
+
+git pull リモートリポジトリの変更をローカルに取り込む
