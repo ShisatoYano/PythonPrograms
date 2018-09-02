@@ -151,6 +151,8 @@ def main():
 
     gpgga_data_frame_xy = transform_lonlat_to_xy(gpgga_data_frame)
 
+    gpgga_data_frame_xy.to_csv('nmea_gpgga_data_frame.csv')
+
     analyze_plot_gpgga(gpgga_data_frame_xy)
     
 
