@@ -1,12 +1,12 @@
-sfevent_ods_analysis.py
+animation_player.py
 ===============
 
-SFEVENT.txtからODS検知エラーの発報回数を集計する
+GUI Tool to playback recorded data as animation.
 
 ## Description  
-解析するSFEVETNが記録されていたトラックの号機、日付ごとに  
-ODS各センサの検知エラーの発生回数をカウントしてグラフ化する。  
-自動でグラフを作成して、それらは画像ファイルで保存される。  
+Read csv file as pandas data frame.  
+You can playback the data with matplotlib.  
+You can switch start/stop playback and playback speed is chanageable.  
 
 ## Author
 Shisato Yano

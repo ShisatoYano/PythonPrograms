@@ -93,7 +93,7 @@ if __name__ == '__main__':
     # radio button for setting playback speed
     radio_btn_clr  = 'lightgoldenrodyellow'
     ax_pb_Spd_btn  = plt.axes([0.05, 0.7, 0.1, 0.1], facecolor=radio_btn_clr)
-    pb_spd_btn_obj = RadioButtons(ax_pb_Spd_btn, ('Normal', 'X2', 'X1.5', 'X0.75', 'X0.5'))
+    pb_spd_btn_obj = RadioButtons(ax_pb_Spd_btn, ('Normal', '2X', '1.5X', '0.75X', '0.5X'))
     global pb_spd_prm
     pb_spd_prm = 1
     # function
@@ -101,13 +101,13 @@ if __name__ == '__main__':
         global pb_spd_prm
         if label == 'Normal':   # 50ms
             pb_spd_prm = 1
-        elif label == 'X2':     # 25ms
+        elif label == '2X':     # 25ms
             pb_spd_prm = 1/2
-        elif label == 'X1.5':   # 33ms
+        elif label == '1.5X':   # 33ms
             pb_spd_prm = 1/1.5
-        elif label == 'X0.75':  # 67ms
+        elif label == '0.75X':  # 67ms
             pb_spd_prm = 1/0.75
-        elif label == 'X0.5':   # 100ms
+        elif label == '0.5X':   # 100ms
             pb_spd_prm = 1/0.5
         else:
             pb_spd_prm = 1
