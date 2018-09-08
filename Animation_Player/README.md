@@ -12,38 +12,33 @@ You can switch start/stop playback and playback speed is chanageable.
 Shisato Yano
 
 ## Dependency
-Python 3.6.5 :: Anaconda  
-以下のモジュールをimportしてください  
-モジュール名 自分が動作確認した際のバージョン  
-matplotlib 2.2.2  
-pandas     0.23.3  
-numpy      1.14.2  
-tqdm       4.24.0  
-tkinter    8.6  
-os  
+Python 3.6.4 :: Anaconda  
+Please import the following module    
+matplotlib 2.1.2  
+pandas     0.22.0  
+datetime     
 
 ## Usage
-1. 解析したSFEVENT.txtを全て一つのディレクトリに置いておく  
-![image_alt_text](http://192.168.3.2:8011/yano/FRDataAnalysisTools/blob/master/SfEventOdsAnalysis/image_sample/SFEVENT_Directory.PNG?raw=true)  
+1. Start this application: python animation_player    
 
-2. python sfevent_ods_analysis.pyでツールを起動  
+2. This application read sample csv data file "nmea_gpgga_data_frame.csv" automatically  
 
-3. ディレクトリを選択するダイアログが開くので、1で作成したディレクトリを選択する  
-![image_alt_text](http://192.168.3.2:8011/yano/FRDataAnalysisTools/blob/master/SfEventOdsAnalysis/image_sample/Select_Directory.PNG?raw=true)  
+3. GUI figure will be displayed as follow.  
+![image_alt_text](https://github.com/ShisatoYano/PythonPrograms/blob/master/Animation_Player/animation_player_demo.gif?raw=true)  
 
-4. データ読み込みと解析が実行され、Completedのメッセージが表示されたら完了(OKを押す)  
-![image_alt_text](http://192.168.3.2:8011/yano/FRDataAnalysisTools/blob/master/SfEventOdsAnalysis/image_sample/Run_Completed.PNG?raw=true)  
+4. Radia button "Stop" is selected as default. You can start playback data by selecting "Start".  
 
-5. 作成されたグラフの画像はソースファイルと同じディレクトリに保存される(~.png)  
+5. You can fast forward or rewind the animation by operating the bottom slider.  
 
-## Result samples
-大きく分けて3種類のグラフが作成される。  
-1. ある日付において、各エラーがどのトラックで何回起きたか  
-![image_alt_text](http://192.168.3.2:8011/yano/FRDataAnalysisTools/blob/master/SfEventOdsAnalysis/image_sample/Error_Count_BarGraph_180801.png?raw=true)  
+6. There are 5 patterns of playback speed,"Normal", "2X", "1.5X", "0.75X", "0.5X". You can select pattern you prefer.  
 
-2. 一つのエラーが、各日付にてどのトラックで何回起きたか  
-![image_alt_text](http://192.168.3.2:8011/yano/FRDataAnalysisTools/blob/master/SfEventOdsAnalysis/image_sample/Error_Count_BarGraph_LRL.png?raw=true)  
+## X-Y GPS Position Plot  
+Black line is GPS trajectory and Blue/Red point marker is position at current time.  
+Ploit color blue means GPS quality is stand alone. Red color means differential GPS.  
 
-3. 一台のトラックで、各日付にてどのエラーが何回起きたか  
-![image_alt_text](http://192.168.3.2:8011/yano/FRDataAnalysisTools/blob/master/SfEventOdsAnalysis/image_sample/Error_Count_BarGraph_T05.png?raw=true)  
+## Datetime - HDOP graph
+The upper right graph is HDOP graph at each datetime. 
+
+## Datetime - Satellite Num graph
+The lower right graph is satellite num graph at each datetime.
 
