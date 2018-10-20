@@ -37,3 +37,7 @@ git commit --amend 直前のコミットに上書き
 git push -u origin master リモートリポジトリにプッシュ
 
 git pull リモートリポジトリの変更をローカルに取り込む
+
+git rm hoge リポジトリから削除、かつディレクトリから削除
+
+git rm --cached hoge リポジトリから削除、でもディレクトリには残す
