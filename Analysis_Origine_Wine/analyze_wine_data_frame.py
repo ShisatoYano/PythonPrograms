@@ -6,10 +6,12 @@ save the data frame as csv file
 """
 
 import pandas as pd
+import seaborn as sbn
 import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
+from sklearn import preprocessing
 
-def plot__2d_correlation(data_frame):
+def plot_2d_correlation(data_frame):
     wine_class = data_frame['Class']
     for colmun in data_frame.columns:
         if colmun != 'Class':
@@ -25,7 +27,7 @@ def plot__2d_correlation(data_frame):
             fig_cor.tight_layout()
     plt.show()
 
-def scatter__2d_correlation(data_frame):
+def scatter_2d_correlation(data_frame):
     wine_class     = data_frame['Class']
     wine_flava     = data_frame['Flavanoids']
     wine_dilu      = data_frame['OD280/OD315 of diluted wines']
@@ -33,20 +35,8 @@ def scatter__2d_correlation(data_frame):
     wine_hue       = data_frame['Hue']
     wine_proline   = data_frame['Proline']
     wine_clr_intns = data_frame['Color intensity']
-    # scatter: each attributions - class
-    # for colmun in data_frame.columns:
-    #     if colmun != 'Class' and colmun != 'Color intensity':
-    #         wine_feature = data_frame[colmun]
-    #         fig_cor, ax_plt_cor = plt.subplots(1,1,figsize=(7,7))
-    #         sc = ax_plt_cor.scatter(wine_feature, wine_class, c=wine_clr_intns, cmap='spring')
-    #         title_str = 'Wine Correlation: ' + colmun + ' - Class'
-    #         ax_plt_cor.set_title(title_str) 
-    #         ax_plt_cor.set_xlabel(colmun)
-    #         ax_plt_cor.set_ylabel('Class')
-    #         ax_plt_cor.set_ylim([0, 4])
-    #         ax_plt_cor.grid()
-    #         fig_cor.tight_layout()
-    #         plt.colorbar(sc)
+
+    df_cls_clr_pln = data_frame[['Class', 'Color intensity', 'Proline']]
 
     # scatter colored by class
     # 1: Flavanoids - Color intensity
@@ -104,6 +94,66 @@ def scatter__2d_correlation(data_frame):
     fig_proline_intns.tight_layout()
     plt.colorbar(sc_proline_intns)
 
+    sbn.pairplot(df_cls_clr_pln, hue='Class')
+
+    plt.show()
+
+def compare_origine_standard_normalize(data_frame):
+    # original data
+    data_label      = data_frame['Class'].values
+    data_attrib_org = data_frame[['Color intensity', 'Proline']].values
+
+    # standard
+    sc              = preprocessing.StandardScaler()
+    data_attrib_std = sc.fit_transform(data_attrib_org)
+
+    # normalize
+    ms              = preprocessing.MinMaxScaler()
+    data_attrib_nrm = ms.fit_transform(data_attrib_org)
+
+    # distribution of Proline and Color intensity
+    fig_hist_prl_cint, (ax_hist_prl, ax_hist_cint) = plt.subplots(1,2,figsize=(7,7))
+    ax_hist_cint.hist(data_attrib_org[:,0], bins=20)
+    ax_hist_prl.hist(data_attrib_org[:,1], bins=20)
+    ax_hist_cint.set_title('Histgram of Color intensity distribution')
+    ax_hist_prl.set_title('Histgram of Proline distribution')
+    ax_hist_cint.grid()
+    ax_hist_prl.grid()
+    fig_hist_prl_cint.tight_layout()
+
+    # Proline - Color intensity Scatter: original
+    fig_prl_cint_org, ax_prl_cint_org = plt.subplots(1,1,figsize=(7,7))
+    sc_prl_cint_org = ax_prl_cint_org.scatter(data_attrib_org[:,0], data_attrib_org[:,1], vmin=1, vmax=3, c=data_label, cmap='spring')
+    title_str = 'Wine Correlation(Org): Proline - Color intensity colored by Class'
+    ax_prl_cint_org.set_title(title_str) 
+    ax_prl_cint_org.set_ylabel('Proline(Org)')
+    ax_prl_cint_org.set_xlabel('Color intensity(Org)')
+    ax_prl_cint_org.grid()
+    fig_prl_cint_org.tight_layout()
+    plt.colorbar(sc_prl_cint_org)
+
+    # Proline - Color intensity Scatter: standard
+    fig_prl_cint_std, ax_prl_cint_std = plt.subplots(1,1,figsize=(7,7))
+    sc_prl_cint_std = ax_prl_cint_std.scatter(data_attrib_std[:,0], data_attrib_std[:,1], vmin=1, vmax=3, c=data_label, cmap='spring')
+    title_str = 'Wine Correlation(Std): Proline - Color intensity colored by Class'
+    ax_prl_cint_std.set_title(title_str) 
+    ax_prl_cint_std.set_ylabel('Proline(Std)')
+    ax_prl_cint_std.set_xlabel('Color intensity(Std)')
+    ax_prl_cint_std.grid()
+    fig_prl_cint_std.tight_layout()
+    plt.colorbar(sc_prl_cint_std)
+
+    # Proline - Color intensity Scatter: normalization
+    fig_prl_cint_nrm, ax_prl_cint_nrm = plt.subplots(1,1,figsize=(7,7))
+    sc_prl_cint_nrm = ax_prl_cint_nrm.scatter(data_attrib_nrm[:,0], data_attrib_nrm[:,1], vmin=1, vmax=3, c=data_label, cmap='spring')
+    title_str = 'Wine Correlation(Nrm): Proline - Color intensity colored by Class'
+    ax_prl_cint_nrm.set_title(title_str) 
+    ax_prl_cint_nrm.set_ylabel('Proline(Nrm)')
+    ax_prl_cint_nrm.set_xlabel('Color intensity(Nrm)')
+    ax_prl_cint_nrm.grid()
+    fig_prl_cint_nrm.tight_layout()
+    plt.colorbar(sc_prl_cint_nrm)
+
     plt.show()
 
 def integrate_class1_class3(data_frame):
@@ -115,22 +165,16 @@ def integrate_class1_class3(data_frame):
     data_frame_intg['Class'] = wine_class_intg
     return data_frame_intg
 
-def split_data_train_test(data_frame):
-    data_label      = data_frame['Class'].values
-    data_attributes = data_frame.ix[:,1:].values
-    attrib_train, attrib_test, label_train, label_test = train_test_split(data_attributes,data_label,test_size=0.3,random_state=0)
-    return label_train, attrib_train
-
 def main():
     wine_data_frame = pd.read_csv('wine_data_frame.csv')
 
-    # label_train, attrib_train = split_data_train_test(wine_data_frame)
-
     # wine_data_frame_intg = integrate_class1_class3(wine_data_frame)
 
-    # plot__2d_correlation(wine_data_frame_intg)
+    # plot_2d_correlation(wine_data_frame_intg)
 
-    scatter__2d_correlation(wine_data_frame)
+    # scatter_2d_correlation(wine_data_frame)
+
+    compare_origine_standard_normalize(wine_data_frame)
 
 if __name__ == '__main__':
     main()
