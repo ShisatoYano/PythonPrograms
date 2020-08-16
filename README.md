@@ -42,15 +42,15 @@ Code collections to study Python programming.
 ### Animation_Player
 * [Animation_Player](https://github.com/ShisatoYano/PythonPrograms/tree/master/Animation_Player)
 * GUI to playback time series data.
-* Playback speed and start/stop can be controlled.
+* Playback speed and start/stop can be controlled.  
 ![](img/AnimationPlayer.PNG)
 
 ### Analysis_Origine_Wine
 * [Analysis_Origine_Wine](https://github.com/ShisatoYano/PythonPrograms/tree/master/Analysis_Origine_Wine)
 * Learning and predicting class of wine by using SVM classification.
-* Analysis about correlation of data.
+* Analysis about correlation of data.  
 ![](img/AnalysisOrigineWine.PNG)
-* Prediction redult by SVM classification.
+* Prediction redult by SVM classification.  
 ![](img/WineSVC.PNG)
 
 ## License
