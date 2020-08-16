@@ -1,0 +1,9 @@
+matplotlib
+numpy
+pandas
+tqdm
+datetime
+pyproj
+py_translator
+scikit-learn
+mlxtend
